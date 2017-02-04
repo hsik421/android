@@ -42,7 +42,9 @@ public class ListActivity extends AppCompatActivity {
     private static final String TAG = ListActivity.class.getSimpleName();
     private ListAdapter adapter;
     private Paint p = new Paint();
-
+    private LinearLayoutManager mLayoutManager;
+    private boolean isLoading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,10 +52,28 @@ public class ListActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         adapter = new ListAdapter();
-        listRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        mLayoutManager = new LinearLayoutManager(this);
+        listRecyclerview.setLayoutManager(mLayoutManager);
         listRecyclerview.addItemDecoration(new DividerItemDecoration(this));
         listRecyclerview.setAdapter(adapter);
+        listRecyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if(dy > 0){
+                    visibleItemCount = mLayoutManager.getChildCount();
+                    totalItemCount = mLayoutManager.getItemCount();
+                    pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
 
+                    if (isLoading){
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount){
+                            isLoading = false;
+                            Log.v("...", "Last Item Wow !");
+                            //Do pagination.. i.e. fetch new data
+                        }
+                    }
+                }
+            }
+        });
         listRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
