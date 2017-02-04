@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
     Button mainListBtn;
     @BindView(R.id.main_json_btn)
     Button mainJsonBtn;
+    @BindView(R.id.main_pager_btn)
+    Button mainPagerBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,17 +25,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
     }
-    private void moveActivity(Intent pIntent){
+
+    private void moveActivity(Intent pIntent) {
         startActivity(pIntent);
     }
-    @OnClick({R.id.main_list_btn, R.id.main_json_btn})
+
+    @OnClick({R.id.main_list_btn, R.id.main_json_btn,R.id.main_pager_btn})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.main_list_btn:
-                moveActivity(new Intent(this,ListActivity.class));
+                moveActivity(new Intent(this, ListActivity.class));
                 break;
             case R.id.main_json_btn:
-                moveActivity(new Intent(this,JsonActivity.class));
+                moveActivity(new Intent(this, JsonActivity.class));
+                break;
+            case R.id.main_pager_btn:
+                moveActivity(new Intent(this, PagerActivity.class));
                 break;
         }
     }
