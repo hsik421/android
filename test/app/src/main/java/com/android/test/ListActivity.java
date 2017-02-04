@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
 
 import butterknife.BindView;
@@ -35,9 +36,10 @@ public class ListActivity extends AppCompatActivity {
     AppBarLayout listAppbar;
     @BindView(R.id.list_recyclerview)
     RecyclerView listRecyclerview;
-//    @BindView(R.id.list_refresh)
-//    SwipeRefreshLayout listRefresh;
+    @BindView(R.id.list_refresh)
+    SwipeRefreshLayout listRefresh;
 
+    private static final String TAG = ListActivity.class.getSimpleName();
     private ListAdapter adapter;
     private Paint p = new Paint();
 
@@ -52,12 +54,12 @@ public class ListActivity extends AppCompatActivity {
         listRecyclerview.addItemDecoration(new DividerItemDecoration(this));
         listRecyclerview.setAdapter(adapter);
 
-//        listRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//
-//            }
-//        });
+        listRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                listRefresh.setRefreshing(false);
+            }
+        });
         initSwipte();
 
     }
