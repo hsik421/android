@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     Button mainPagerBtn;
     @BindView(R.id.main_slide_btn)
     Button mainSlideBtn;
+    @BindView(R.id.main_navi_btn)
+    Button mainNaviBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(pIntent);
     }
 
-    @OnClick({R.id.main_list_btn, R.id.main_json_btn, R.id.main_pager_btn,R.id.main_slide_btn})
+    @OnClick({R.id.main_list_btn, R.id.main_json_btn, R.id.main_pager_btn, R.id.main_slide_btn,R.id.main_navi_btn})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.main_list_btn:
@@ -46,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.main_slide_btn:
                 moveActivity(new Intent(this, SlideActivity.class));
+                break;
+            case R.id.main_navi_btn:
+                moveActivity(new Intent(this, NaviActivity.class));
                 break;
         }
     }
