@@ -1,7 +1,11 @@
 package com.android.test;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -21,13 +25,29 @@ public class ServiceActivity extends AppCompatActivity {
     @BindView(R.id.service_stop_btn)
     Button serviceStopBtn;
 
+    private static final String TAG = ServiceActivity.class.getSimpleName();
     private Intent mIntent;
+    private ServiceConnection mConnection;
+    private LocalService mService;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.service_activity);
         ButterKnife.bind(this);
-        mIntent = new Intent(this,PlayService.class);
+        mIntent = new Intent(this,LocalService.class);
+        mConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                LocalService.LocalBinder binder = (LocalService.LocalBinder)iBinder;
+                mService = binder.getService();
+                startService(mIntent);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+
+            }
+        };
     }
 
     @OnClick({R.id.service_start_btn, R.id.service_stop_btn})
@@ -35,18 +55,30 @@ public class ServiceActivity extends AppCompatActivity {
 
         switch (view.getId()) {
             case R.id.service_start_btn:
-                stopService(mIntent);
-                startService(mIntent);
+                Intent intent = new Intent( getApplicationContext(), MediaPlayerService.class );
+                intent.setAction( MediaPlayerService.ACTION_PLAY );
+                startService( intent );
                 break;
             case R.id.service_stop_btn:
-                stopService(mIntent);
+
                 break;
         }
     }
 
     @Override
     public void onBackPressed() {
-        stopService(mIntent);
         super.onBackPressed();
+        if(mService.isService()){
+            unbindService(mConnection);
+            stopService(mIntent);
+        }
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        bindService(mIntent,mConnection,Context.BIND_AUTO_CREATE);
+    }
+
+
 }
