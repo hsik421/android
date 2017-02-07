@@ -21,6 +21,8 @@
         <activity android:name=".PagerActivity"/>
         <activity android:name=".SlideActivity"/>
         <activity android:name=".NaviActivity"/>
+        <activity android:name=".ServiceActivity"/>
+        <service android:name=".PlayService"/>
     </application>
 
 </manifest>
