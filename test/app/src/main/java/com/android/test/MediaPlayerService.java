@@ -12,7 +12,9 @@ import android.media.session.MediaSession;
 import android.media.session.MediaSessionManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 /**
  * Created by admin on 2017-02-07.
@@ -47,14 +49,14 @@ public class MediaPlayerService extends Service {
             public void onPlay() {
                 super.onPlay();
                 Log.e( "MediaPlayerService", "onPlay");
-                buildNotification( generateAction( android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE ) );
+                buildNotification();
             }
 
             @Override
             public void onPause() {
                 super.onPause();
                 Log.e( "MediaPlayerService", "onPause");
-                buildNotification(generateAction(android.R.drawable.ic_media_play, "Play", ACTION_PLAY));
+                buildNotification();
             }
 
             @Override
@@ -62,7 +64,7 @@ public class MediaPlayerService extends Service {
                 super.onSkipToNext();
                 Log.e( "MediaPlayerService", "onSkipToNext");
                 //Change media here
-                buildNotification( generateAction( android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE ) );
+                buildNotification();
             }
 
             @Override
@@ -70,7 +72,7 @@ public class MediaPlayerService extends Service {
                 super.onSkipToPrevious();
                 Log.e( "MediaPlayerService", "onSkipToPrevious");
                 //Change media here
-                buildNotification( generateAction( android.R.drawable.ic_media_pause, "Pause", ACTION_PAUSE ) );
+                buildNotification();
             }
 
             @Override
@@ -124,35 +126,43 @@ public class MediaPlayerService extends Service {
         }
     }
 
-    private Notification.Action generateAction(int icon, String title, String intentAction ) {
-        Intent intent = new Intent( getApplicationContext(), MediaPlayerService.class );
-        intent.setAction( intentAction );
-        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 1, intent, 0);
-        return new Notification.Action.Builder( icon, title, pendingIntent ).build();
-    }
 
-    private void buildNotification( Notification.Action action ) {
-        Notification.MediaStyle style = new Notification.MediaStyle();
 
+    private void buildNotification() {
         Intent intent = new Intent( getApplicationContext(), MediaPlayerService.class );
         intent.setAction( ACTION_STOP );
         PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 1, intent, 0);
-        Notification.Builder builder = new Notification.Builder( this )
+        RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.notification_view);
+        remoteViews.setOnClickPendingIntent(R.id.noti_left,getPendingIntent(2,ACTION_NEXT));
+        remoteViews.setOnClickPendingIntent(R.id.noti_play,getPendingIntent(0,ACTION_PLAY));
+        remoteViews.setOnClickPendingIntent(R.id.noti_right,getPendingIntent(1,ACTION_PREVIOUS));
+        NotificationCompat.Builder builder = new NotificationCompat.Builder( this )
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle( "Media Title" )
                 .setContentText( "Media Artist" )
                 .setDeleteIntent( pendingIntent )
-                .setStyle(style);
-
-        builder.addAction( generateAction( android.R.drawable.ic_media_previous, "Previous", ACTION_PREVIOUS ) );
-        builder.addAction( generateAction( android.R.drawable.ic_media_rew, "Rewind", ACTION_REWIND ) );
-        builder.addAction( action );
-        builder.addAction( generateAction( android.R.drawable.ic_media_ff, "Fast Foward", ACTION_FAST_FORWARD ) );
-        builder.addAction( generateAction( android.R.drawable.ic_media_next, "Next", ACTION_NEXT ) );
-        style.setShowActionsInCompactView(0,1,2,3,4);
+                .setCustomBigContentView(remoteViews);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE );
         notificationManager.notify( 1, builder.build() );
+    }
+    private PendingIntent getPendingIntent(int num,String pAction){
+        Intent intent = new Intent(this,MediaPlayerService.class);
+        switch (num){
+            case 0:
+                intent.setAction("play");
+                intent.setAction(pAction);
+                break;
+            case 1:
+                intent.setAction("right");
+                intent.setAction(pAction);
+                break;
+            case 2:
+                intent.setAction("left");
+                intent.setAction(pAction);
+                break;
+        }
+        return PendingIntent.getService(this,1,intent,0);
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
