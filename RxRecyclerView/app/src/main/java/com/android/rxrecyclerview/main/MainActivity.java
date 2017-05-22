@@ -22,8 +22,6 @@ import com.android.rxrecyclerview.adapter.MainMainMainRecyclerAdapter;
 
 import java.util.ArrayList;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -38,8 +36,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     SwipeRefreshLayout mainRefreshlayout;
 
     MainMainMainRecyclerAdapter adapter;
-    @Inject MainContract.Presenter mainPresenter;
-
+    MainContract.Presenter mainPresenter;
+    MainComponent component;
     Paint paint;
 
     @Override
@@ -51,7 +49,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         paint = new Paint();
         adapter = new MainMainMainRecyclerAdapter();
 
-        DaggerMainComponent.builder().mainPresenterModule(new MainPresenterModule(this)).build();
+        component = DaggerMainComponent.builder().mainPresenterModule(new MainPresenterModule(this)).build();
+        component.inject(this);
+        mainPresenter = component.mainPresenter();
+
         mainPresenter.initData();
         mainRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         mainRecyclerview.setAdapter(adapter);
@@ -118,6 +119,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void toast(int position) {
         Toast.makeText(this, "position = " + position, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mainPresenter.start();
     }
 
     @Override

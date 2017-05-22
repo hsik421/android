@@ -13,8 +13,12 @@ public class MainPresenterModule {
         this.mView = mView;
     }
     @Provides
-    MainContract.View provideMainContractView(){
+    public MainContract.View provideMainContractView(){
         return mView;
+    }
+    @Provides
+    public MainContract.Presenter providePresenter(MainContract.View view){
+        return new MainPresenter(view);
     }
 
 }
