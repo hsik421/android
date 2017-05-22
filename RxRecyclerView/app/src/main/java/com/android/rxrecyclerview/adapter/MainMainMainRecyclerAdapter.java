@@ -1,14 +1,18 @@
-package com.android.rxrecyclerview;
+package com.android.rxrecyclerview.adapter;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.rxrecyclerview.OnRecyclerItemClickListener;
+import com.android.rxrecyclerview.R;
+
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,9 +21,12 @@ import butterknife.ButterKnife;
  * Created by admin on 2017-02-14.
  */
 
-public class RecyclerAdapter extends RecyclerView.Adapter implements RecyclerDataModel,RecyclerAdapterView{
+public class MainMainMainRecyclerAdapter extends RecyclerView.Adapter implements MainRecyclerDataModel,MainRecyclerAdapterView {
     private ArrayList<String> mDataList = new ArrayList<>();
     private OnRecyclerItemClickListener mListener;
+    @Inject
+    public MainMainMainRecyclerAdapter() {
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -32,7 +39,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter implements RecyclerDat
         ViewHolder holder = (ViewHolder)pHolder;
         TextView textView = holder.recyclerItemText;
         textView.setText(mDataList.get(position));
-        textView.setOnClickListener(v->mListener.onItemClick(RecyclerAdapter.this, position));
+        textView.setOnClickListener(v->mListener.onItemClick(MainMainMainRecyclerAdapter.this, position));
     }
 
     @Override

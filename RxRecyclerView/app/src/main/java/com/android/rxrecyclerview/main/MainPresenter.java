@@ -1,29 +1,23 @@
-package com.android.rxrecyclerview;
+package com.android.rxrecyclerview.main;
 
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 /**
  * Created by admin on 2017-02-14.
  */
 
-public class MainPresenterImpl implements MainPresenter {
-    private View view;
-    public MainPresenterImpl(View view) {
+public class MainPresenter implements MainContract.Presenter {
+
+
+    private MainContract.View view;
+    @Inject
+    public MainPresenter(MainContract.View view) {
         this.view = view;
     }
 
@@ -53,6 +47,9 @@ public class MainPresenterImpl implements MainPresenter {
             view.removeItem(position);
         }
     }
+    @Override
+    public void start() {
 
+    }
 
 }
